@@ -24,14 +24,14 @@ boolean tenSeconds = false;
 void setup() {
   servo1.attach(9);
   servo2.attach(10);
-  servo3.attach(12);
+  //servo3.attach(12);
   pinMode(indicator,OUTPUT);
   pinMode(rel_vib, OUTPUT);
   pinMode(reset,INPUT);
   pinMode(prop_car,INPUT);
   pinMode(rel_hov, OUTPUT);
   Serial.begin(9600);
-  servo3.write(180);
+  //servo3.write(180);
   digitalWrite(rel_hov,HIGH);
   digitalWrite(rel_vib,HIGH);
 }
@@ -39,7 +39,7 @@ void setup() {
 void loop() {
   long duration1, duration2, cm1, cm2;
   time = millis();
-  if (time = 5000) {
+  if (time = 15000) {
   	tenSeconds = true;
   }
   pinMode(pingPin, OUTPUT); //code for the ball ping sensor pulse
@@ -69,11 +69,9 @@ void loop() {
 	if (resetState == HIGH) {
     servo1.write(0);
     servo2.write(180);
-    digitalWrite(indicator,HIGH);
     servo3.write(180);
   }
   else {
-  	digitalWrite(indicator,LOW);
   	servo1.write(90);
   	servo2.write(90);
   }
@@ -82,7 +80,7 @@ void loop() {
   	pullBack();
   }
   
-  if ((cm2 < 10) && (startProject) && (tenSeconds)) {
+  if ((cm2 < 2) && (startProject) && (tenSeconds)) {
   	startProj();
   }
 
@@ -98,21 +96,24 @@ long microsecondsToCentimeters(long microseconds) {
 
 void pullBack() {
 	digitalWrite(rel_hov,LOW);
-	delay(1000);
+	delay(500);
 	servo1.write(180);
 	servo2.write(0);
-	delay(6000);
-	digitalWrite(rel_hov,HIGH);
+	delay(4300);
+	digitalWrite(rel_vib,LOW);
 	servo1.write(90);
 	servo2.write(90);
-	runHovercraft = false;
-	digitalWrite(rel_vib,LOW);
-	delay(2000);
+	delay(3000);
 	digitalWrite(rel_vib,HIGH);
+	digitalWrite(rel_hov,HIGH);
+	runHovercraft = false;
+	
 }
 
 void startProj() {
+	servo3.attach(12);
 	servo3.write(145);
 	delay(1000);
 	startProject = false;
+	digitalWrite(indicator,HIGH);
 }
