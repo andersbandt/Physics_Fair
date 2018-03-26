@@ -3,18 +3,21 @@
 #include <CapacitiveSensor.h>
 
 const int reset = 2;
+const int prop_car = 11;
 const int indicator = 13;
 const int pingPin = 5;
 const int trigPin = 6;
 const int recPin = 7;
 const int rel_hov = 3;
-const int rel_vib = 1;
+const int rel_vib = 4;
 int resetState = 0;
+int prop_carState = 0;
 int ballState = 0;
 Servo servo1;
 Servo servo2;
 Servo servo3;
 boolean runHovercraft = true;
+boolean startProject = true;
 
 
 // the setup routine runs once when you press reset:
@@ -25,8 +28,12 @@ void setup() {
   pinMode(indicator,OUTPUT);
   pinMode(rel_vib, OUTPUT);
   pinMode(reset,INPUT);
+  pinMode(prop_car,INPUT);
   pinMode(rel_hov, OUTPUT);
   Serial.begin(9600);
+  servo3.write(180);
+  digitalWrite(rel_hov,HIGH);
+  digitalWrite(rel_vib,HIGH);
 }
 
 void loop() {
@@ -61,6 +68,7 @@ void loop() {
     servo1.write(0);
     servo2.write(180);
     digitalWrite(indicator,HIGH);
+    servo3.write(180);
   }
   else {
   	digitalWrite(indicator,LOW);
@@ -69,11 +77,23 @@ void loop() {
   }
   
   if ((cm1 > 10) && (runHovercraft)) {
-  	//pullBack();
-  	//cm1 = 0;
+  	pullBack();
+
   }
   
+  if ((cm2 < 10) && (startProject)) {
+  	startProj();
+  }
 
+prop_carState = digitalRead(prop_car);
+
+if (prop_carState = 1) {
+//	digitalWrite(rel_vib,LOW);
+//	delay(2000);
+//	digitalWrite(rel_vib,HIGH);
+}
+Serial.print(prop_carState);
+  
 delay(100);
 	
 }
@@ -83,14 +103,19 @@ long microsecondsToCentimeters(long microseconds) {
 }
 
 void pullBack() {
+	digitalWrite(rel_hov,LOW);
+	delay(1000);
 	servo1.write(180);
 	servo2.write(0);
 	delay(7000);
+	digitalWrite(rel_hov,HIGH);
 	servo1.write(90);
 	servo2.write(90);
 	runHovercraft = false;
 }
 
 void startProj() {
-	servo3.write(40);
+	servo3.write(145);
+	delay(1000);
+	startProject = false;
 }
