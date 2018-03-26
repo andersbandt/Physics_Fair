@@ -1,4 +1,3 @@
-//Physics Fair Project 2018
 #include <Servo.h>
 #include <CapacitiveSensor.h>
 
@@ -11,13 +10,14 @@ const int recPin = 7;
 const int rel_hov = 3;
 const int rel_vib = 4;
 int resetState = 0;
-int prop_carState = 0;
 int ballState = 0;
+int time = 0;
 Servo servo1;
 Servo servo2;
 Servo servo3;
 boolean runHovercraft = true;
 boolean startProject = true;
+boolean tenSeconds = false;
 
 
 // the setup routine runs once when you press reset:
@@ -38,6 +38,10 @@ void setup() {
 
 void loop() {
   long duration1, duration2, cm1, cm2;
+  time = millis();
+  if (time = 5000) {
+  	tenSeconds = true;
+  }
   pinMode(pingPin, OUTPUT); //code for the ball ping sensor pulse
   digitalWrite(pingPin, LOW);
   delayMicroseconds(2);
@@ -61,8 +65,6 @@ void loop() {
   cm1 = microsecondsToCentimeters(duration1); //final ball ping sensor value in centimeters
   cm2 = microsecondsToCentimeters(duration2); //start of the project sensor final value in centimeters
 	
-	
-	
 	resetState = digitalRead(reset); //gets the value of the reset switch
 	if (resetState == HIGH) {
     servo1.write(0);
@@ -78,24 +80,16 @@ void loop() {
   
   if ((cm1 > 10) && (runHovercraft)) {
   	pullBack();
-
   }
   
-  if ((cm2 < 10) && (startProject)) {
+  if ((cm2 < 10) && (startProject) && (tenSeconds)) {
   	startProj();
   }
 
-prop_carState = digitalRead(prop_car);
-
-if (prop_carState = 1) {
-//	digitalWrite(rel_vib,LOW);
-//	delay(2000);
-//	digitalWrite(rel_vib,HIGH);
-}
-Serial.print(prop_carState);
+Serial.print(cm2);
+Serial.print(" ");
   
 delay(100);
-	
 }
 
 long microsecondsToCentimeters(long microseconds) {
@@ -107,11 +101,14 @@ void pullBack() {
 	delay(1000);
 	servo1.write(180);
 	servo2.write(0);
-	delay(7000);
+	delay(6000);
 	digitalWrite(rel_hov,HIGH);
 	servo1.write(90);
 	servo2.write(90);
 	runHovercraft = false;
+	digitalWrite(rel_vib,LOW);
+	delay(2000);
+	digitalWrite(rel_vib,HIGH);
 }
 
 void startProj() {
