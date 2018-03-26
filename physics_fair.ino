@@ -11,6 +11,7 @@ const int rel_hov = 3;
 const int rel_vib = 4;
 int resetState = 0;
 int ballState = 0;
+int prop_carState = 0;
 int time = 0;
 Servo servo1;
 Servo servo2;
@@ -42,6 +43,8 @@ void loop() {
   if (time = 15000) {
   	tenSeconds = true;
   }
+	
+//DISTANCE SENSOR SHIT	
   pinMode(pingPin, OUTPUT); //code for the ball ping sensor pulse
   digitalWrite(pingPin, LOW);
   delayMicroseconds(2);
@@ -65,6 +68,7 @@ void loop() {
   cm1 = microsecondsToCentimeters(duration1); //final ball ping sensor value in centimeters
   cm2 = microsecondsToCentimeters(duration2); //start of the project sensor final value in centimeters
 	
+//RESET BUTTON FOR BLOCK OF WOOD	
 	resetState = digitalRead(reset); //gets the value of the reset switch
 	if (resetState == HIGH) {
     servo1.write(0);
@@ -75,7 +79,7 @@ void loop() {
   	servo1.write(90);
   	servo2.write(90);
   }
-  
+//MARBLE TO PAPER IF STATEMENT  
   if ((cm1 > 10) && (runHovercraft)) {
   	pullBack();
   }
@@ -83,18 +87,23 @@ void loop() {
   if ((cm2 < 2) && (startProject) && (tenSeconds)) {
   	startProj();
   }
+	
+ prop_carState = digitalRead(prop_car);
 
-Serial.print(cm2);
-Serial.print(" ");
+  if (prop_carState == 0) {
+	  digitalWrite(rel_vib,LOW);
+	  delay(2000);
+	  digitalWrite(rel_vib,HIGH);
+  }
   
-delay(100);
+delay(75);
 }
 
-long microsecondsToCentimeters(long microseconds) {
+long microsecondsToCentimeters(long microseconds) { //method for converting pulse into centimeters
   return microseconds / 29 / 2;
 }
 
-void pullBack() {
+void pullBack() { //method that pulls the block back to release the hovercraft
 	digitalWrite(rel_hov,LOW);
 	delay(500);
 	servo1.write(180);
@@ -110,7 +119,7 @@ void pullBack() {
 	
 }
 
-void startProj() {
+void startProj() { //method to tip down the marble at the top of the project
 	servo3.attach(12);
 	servo3.write(145);
 	delay(1000);
