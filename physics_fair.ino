@@ -1,17 +1,8 @@
 #include <Servo.h>
 #include <CapacitiveSensor.h>
 
-const int reset = 2;
-const int prop_car = 11;
-const int indicator = 13;
-const int pingPin = 5;
-const int trigPin = 6;
-const int recPin = 7;
-const int rel_hov = 3;
-const int rel_vib = 4;
-int resetState = 0;
-int ballState = 0;
-int time = 0;
+const int reset = 2, prop_car = 11, indicator = 13, pingPin = 5, trigPin = 6, recPin = 7, rel_hov = 3, rel_vib = 4;
+int resetState = 0, ballState = 0, time = 0;
 Servo servo1;
 Servo servo2;
 Servo servo3;
